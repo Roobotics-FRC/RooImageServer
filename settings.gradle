@@ -1,0 +1,3 @@
+rootProject.name = 'RooImageServer'
+include 'src'
+findProject(':src')?.name = 'RooImageServer'
