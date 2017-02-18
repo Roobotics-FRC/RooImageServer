@@ -1,5 +1,7 @@
 package org.usfirst.frc.team4373.RooImageServer;
 
+import org.usfirst.frc.team4373.roosight.RooSerializableImage;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;

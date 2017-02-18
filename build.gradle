@@ -17,7 +17,7 @@ repositories {
 }
 
 dependencies {
-    compile group: 'org.usfirst.frc.team4373', name: 'RooSight', version: '1.0.1'
+    compile group: 'org.usfirst.frc.team4373', name: 'RooSight', version: '1.0.2'
 }
 
 jar {
