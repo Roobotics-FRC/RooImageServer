@@ -1,0 +1,15 @@
+# Play nice with intellij
+.idea/
+*.iml
+*.ipr
+*.iws
+# Don't commit build files
+build/
+bin/
+*.class
+# Play nice with eclipse
+.classpath
+.settings/
+.project
+# Don't commit gradle caches
+.gradle/

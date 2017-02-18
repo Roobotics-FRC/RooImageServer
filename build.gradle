@@ -1,0 +1,33 @@
+group 'org.usfirst.frc.team4373'
+version '1.0.0'
+
+apply plugin: 'java'
+apply plugin: 'maven'
+apply plugin: 'idea'
+apply plugin: 'eclipse'
+apply plugin: 'application'
+
+sourceCompatibility = 1.8
+
+mainClassName = 'org.usfirst.frc.team4373.RooImageServer.RooImageServer'
+
+repositories {
+    mavenCentral()
+    maven { url 'https://raw.githubusercontent.com/Roobotics-FRC/RooMaven/master' }
+}
+
+dependencies {
+    compile group: 'org.usfirst.frc.team4373', name: 'RooSight', version: '1.0.0'
+}
+
+jar {
+    manifest {
+        attributes(
+                'Class-Path': configurations.compile.collect { it.getName() }.join(' '),
+                'Main-Class': 'org.usfirst.frc.team4373.RooImageServer.RooImageServer'
+        )
+    }
+    from {
+        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
