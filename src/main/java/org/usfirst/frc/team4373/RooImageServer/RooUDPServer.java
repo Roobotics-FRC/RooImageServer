@@ -30,10 +30,8 @@ public class RooUDPServer implements Runnable {
             while (true) {
                 DatagramPacket incomingPacket = new DatagramPacket(incomingData, incomingData.length);
                 socket.receive(incomingPacket);
-                incomingData = incomingPacket.getData();
-                ByteArrayInputStream in = new ByteArrayInputStream(incomingData);
-                ObjectInputStream is = new ObjectInputStream(in);
-
+                ObjectInputStream is = new ObjectInputStream(new ByteArrayInputStream(incomingPacket.getData()));
+                // acquire our little lock
                 currentImageLock.lock();
                 try {
                     RooSerializableImage img = (RooSerializableImage) is.readObject();
