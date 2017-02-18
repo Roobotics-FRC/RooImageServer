@@ -1,4 +1,4 @@
-package org.usfirst.frc.team4373.RooImageServer;
+package org.usfirst.frc.team4373.rooImageServer;
 
 import org.usfirst.frc.team4373.roosight.RooSerializableImage;
 
@@ -7,8 +7,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
-import java.net.InetAddress;
-import java.net.SocketException;
 import java.util.concurrent.locks.Lock;
 
 public class RooUDPServer implements Runnable {

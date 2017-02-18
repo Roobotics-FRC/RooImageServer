@@ -1,6 +1,4 @@
-package org.usfirst.frc.team4373.RooImageServer;
-
-import org.usfirst.frc.team4373.roosight.RooCamera;
+package org.usfirst.frc.team4373.rooImageServer;
 
 /**
  * The main image server class.
