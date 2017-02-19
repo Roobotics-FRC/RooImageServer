@@ -40,16 +40,16 @@ public class RooUDPServer implements Runnable {
         return (actualSize == isSize);
     }
 
-    private synchronized byte[] toByteArray(byte[][] bs, int size) {
+    private synchronized byte[] to1DByteArray(byte[][] twoDArray, int size) {
         int i = 0;
-        byte[] nbs = new byte[size];
-        for (byte[] b : bs) {
-            for (int j = i; j < i + b.length; ++j) {
-                nbs[j] = b[j];
-                i += b.length;
+        byte[] oneDArray = new byte[size];
+        for (byte[] el : twoDArray) {
+            for (int j = i; j < i + el.length; ++j) {
+                oneDArray[j] = el[j];
+                i += el.length;
             }
         }
-        return nbs;
+        return oneDArray;
     }
 
     public void run() {
@@ -78,7 +78,7 @@ public class RooUDPServer implements Runnable {
 
                 }
 
-                byte[] finalImage = toByteArray(image, sizes[0]);
+                byte[] finalImage = to1DByteArray(image, sizes[0]);
 
                 ObjectInputStream is = new ObjectInputStream(new ByteArrayInputStream(finalImage));
                 currentImageLock.lock();
