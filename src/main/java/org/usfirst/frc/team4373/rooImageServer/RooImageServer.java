@@ -28,8 +28,7 @@ public class RooImageServer {
     }
 
     public static void main(String[] args) {
-        // advent of a gigantic if...
-        if(args[1].equals("--runTests")) {
+        if (args[1].equals("--runTests")) {
             runTests();
         } else if(args[1].equals("--runImageStream")) {
             runImageStream();
