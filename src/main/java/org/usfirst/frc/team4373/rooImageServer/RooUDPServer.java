@@ -69,6 +69,8 @@ public class RooUDPServer implements Runnable {
                     sizes[i] = toInt(intBuffer[i]);
                     i++;
                 }
+                System.out.println("a: " + sizes[0]);
+                System.out.println("b: " + sizes[1]);
                 byte[][] image = new byte[sizes[1]][(sizes[0] / sizes[1])];
 
                 for(byte[] part : image) {
@@ -80,12 +82,21 @@ public class RooUDPServer implements Runnable {
                 byte[] finalImage = to1DByteArray(image, sizes[0]);
 
                 ObjectInputStream is = new ObjectInputStream(new ByteArrayInputStream(finalImage));
-                synchronized(currentImage) {
+                if(currentImage == null) {
                     try {
                         RooSerializableImage img = (RooSerializableImage) is.readObject();
                         currentImage = img;
                     } catch (ClassNotFoundException e) {
                         e.printStackTrace();
+                    }
+                }  else {
+                    synchronized (currentImage) {
+                        try {
+                            RooSerializableImage img = (RooSerializableImage) is.readObject();
+                            currentImage = img;
+                        } catch (ClassNotFoundException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
             }
