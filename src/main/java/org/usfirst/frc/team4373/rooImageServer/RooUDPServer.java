@@ -58,9 +58,11 @@ public class RooUDPServer implements Runnable {
             new1[i] = one[i];
 
         }
+        System.out.println("One: " + toInt(new1) + " - size: " + new1.length);
         for (; i < 8; i++) {
             new2[i - 4] = one[i];
         }
+        System.out.println("One: " + toInt(new2) + " - size: " + new2.length);
         return new byte[][]{new1, new2};
     }
 
