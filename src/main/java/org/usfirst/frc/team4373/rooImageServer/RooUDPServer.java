@@ -15,7 +15,7 @@ public class RooUDPServer implements Runnable {
     private int buffSize;
     private DatagramSocket socket;
     private volatile byte[] incomingData;
-    private volatile RooSerializableImage currentImage;
+    private volatile RooSerializableImage currentImage = null;
     private Lock currentImageLock;
 
     public RooUDPServer(int port, int buffSize) throws IOException {
@@ -23,26 +23,71 @@ public class RooUDPServer implements Runnable {
         socket = new DatagramSocket(port);
     }
 
+    private synchronized int toInt(byte[] data) {
+        // byte[] -> int
+        int len = 0;
+        for (int i = 0; i < 4; ++i) {
+            len |= (data[3 - i] & 0xff) << (i << 3);
+        }
+        return len;
+    }
+
+    private synchronized boolean checkSum(int actualSize, int receivedSize, int totalPackets) {
+        return (actualSize == receivedSize * totalPackets);
+    }
+
+    private synchronized boolean checkSum(int actualSize, int isSize) {
+        return (actualSize == isSize);
+    }
+
+    private synchronized byte[] toByteArray(byte[][] bs, int size) {
+        int i = 0;
+        byte[] nbs = new byte[size];
+        for(byte[] b : bs) {
+            for(int j = i; j < i + b.length; j++) {
+                nbs[j] = b[j];
+                i += b.length;
+            }
+        }
+        return nbs;
+    }
+
     public void run() {
         try {
-            byte[] incomingData = new byte[buffSize];
+            byte[] incomingData;
+            byte[] imageLength = new byte[4];
+            byte[][] intBuffer = new byte[2][4];
+            int[] sizes = new int[2];
 
             while (true) {
-                DatagramPacket incomingPacket = new DatagramPacket(incomingData, incomingData.length);
-                socket.receive(incomingPacket);
-                ObjectInputStream is = new ObjectInputStream(new ByteArrayInputStream(incomingPacket.getData()));
-                // acquire our little lock
+                //if (socket.isConnected()) {
+                System.out.println("Received!!");
+                DatagramPacket[] sizePackets = new DatagramPacket[2];
+                int i = 0;
+                for(DatagramPacket p : sizePackets) {
+                    p = new DatagramPacket(intBuffer[i], 4);
+                    socket.receive(p);
+                    sizes[i] = toInt(intBuffer[i]);
+                    i++;
+                }
+                byte[][] image = new byte[sizes[1]][(sizes[0] / sizes[1])];
+
+                for(byte[] part : image) {
+                    DatagramPacket dp = new DatagramPacket(part, part.length);
+                    socket.receive(dp);
+
+                }
+
+                byte[] finalImage = toByteArray(image, sizes[0]);
+
+                ObjectInputStream is = new ObjectInputStream(new ByteArrayInputStream(finalImage));
                 currentImageLock.lock();
                 try {
                     RooSerializableImage img = (RooSerializableImage) is.readObject();
-                    System.out.println("Student object received = "+ img);
-                } catch (ClassNotFoundException e) {
+                } catch(ClassNotFoundException e) {
                     e.printStackTrace();
                 }
                 currentImageLock.unlock();
-
-                //InetAddress IPAddress = incomingPacket.getAddress();
-                //int port = incomingPacket.getPort();
             }
 
         } catch (Exception e) {
@@ -55,5 +100,9 @@ public class RooUDPServer implements Runnable {
         RooSerializableImage temp = currentImage;
         currentImageLock.unlock();
         return temp;
+    }
+
+    public void finalize() {
+        socket.close();
     }
 }
