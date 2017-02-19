@@ -43,8 +43,8 @@ public class RooUDPServer implements Runnable {
     private synchronized byte[] toByteArray(byte[][] bs, int size) {
         int i = 0;
         byte[] nbs = new byte[size];
-        for(byte[] b : bs) {
-            for(int j = i; j < i + b.length; j++) {
+        for (byte[] b : bs) {
+            for (int j = i; j < i + b.length; ++j) {
                 nbs[j] = b[j];
                 i += b.length;
             }
