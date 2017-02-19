@@ -14,9 +14,8 @@ public class RooUDPServer implements Runnable {
     private int port;
     private int buffSize;
     private DatagramSocket socket;
-    private volatile byte[] incomingData;
-    private volatile RooSerializableImage currentImage = null;
-    private Lock currentImageLock;
+    private byte[] incomingData;
+    private RooSerializableImage currentImage = null;
 
     public RooUDPServer(int port, int buffSize) throws IOException {
         this.port = port;
@@ -81,13 +80,14 @@ public class RooUDPServer implements Runnable {
                 byte[] finalImage = to1DByteArray(image, sizes[0]);
 
                 ObjectInputStream is = new ObjectInputStream(new ByteArrayInputStream(finalImage));
-                currentImageLock.lock();
-                try {
-                    RooSerializableImage img = (RooSerializableImage) is.readObject();
-                } catch(ClassNotFoundException e) {
-                    e.printStackTrace();
+                synchronized(currentImage) {
+                    try {
+                        RooSerializableImage img = (RooSerializableImage) is.readObject();
+                        currentImage = img;
+                    } catch (ClassNotFoundException e) {
+                        e.printStackTrace();
+                    }
                 }
-                currentImageLock.unlock();
             }
 
         } catch (Exception e) {
@@ -95,11 +95,10 @@ public class RooUDPServer implements Runnable {
         }
     }
 
-    public RooSerializableImage safeGetCurrentImage() {
-        currentImageLock.lock();
-        RooSerializableImage temp = currentImage;
-        currentImageLock.unlock();
-        return temp;
+    public synchronized RooSerializableImage safeGetCurrentImage() {
+        synchronized(currentImage) {
+            return currentImage;
+        }
     }
 
     public void finalize() {
