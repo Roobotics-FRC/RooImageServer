@@ -9,7 +9,7 @@ apply plugin: 'application'
 
 sourceCompatibility = 1.8
 
-mainClassName = 'org.usfirst.frc.team4373.RooImageServer.RooImageServer'
+mainClassName = 'org.usfirst.frc.team4373.rooImageServer.RooImageServer'
 
 repositories {
     mavenCentral()
@@ -17,14 +17,14 @@ repositories {
 }
 
 dependencies {
-    compile group: 'org.usfirst.frc.team4373', name: 'RooSight', version: '1.0.2'
+    compile group: 'in.derros.jni', name: 'UDPStreamer', version: '1.0.2'
 }
 
 jar {
     manifest {
         attributes(
                 'Class-Path': configurations.compile.collect { it.getName() }.join(' '),
-                'Main-Class': 'org.usfirst.frc.team4373.RooImageServer.RooImageServer'
+                'Main-Class': 'org.usfirst.frc.team4373.rooImageServer.RooImageServer'
         )
     }
     from {
