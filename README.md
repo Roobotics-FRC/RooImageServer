@@ -1,2 +1,3 @@
 # RooImageServer
-A Java image server meant to run on an external processing device that uses NetworkTables for communication.
+
+An image server responsible for loading images streamed over the network from an external device on the driver station. Depends on https://github.com/Roobotics-FRC/udp-img-lib.
